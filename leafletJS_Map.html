@@ -1,43 +1,51 @@
-<! This is project #4 cis399 fall 2015 -->
-<! Simple webpage that shows a MapQuest map of Eugene.
-	Users should be able to place map markers by clicking or
-	tapping on the map. -->
-<!DOCTYPE html>
 <html>
-	<head>
-		<! <meta charset="utf-8">
-		<title>LeafletJS Map</title>
-		<! Including the leafletJS css and javascript libraries -->
-		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-		<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
-		
-		<! Load the MapQuest maps javascript plugins -->
-		<script src="http://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=SOoctRD4IfsY1ozL5vsosetXnKq8oaCA"></script>
-		<script src="http://www.mapquestapi.com/sdk/leaflet/v2.s/mq-geocoding.js?key=SOoctRD4IfsY1ozL5vsosetXnKq8oaCA"></script>
-		
-		<! Javascript section with the map -->
-		<script type="text/javascript">
+    <head>
+	<! Load leafletJS stuff -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css" />
 
-		window.onload = function() {
-			// make a popup to describe a location
-			var popup = L.popup();
-			// Finds best result for what location is
-			var geocode = MQ.geocode().on("success", function(e) {
-				popup.setContent(geocode.describeLocation(e.result.best));
-			});
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
 
-			var map = L.map("map", { layers: MQ.mapLayer(), tap: true})
-				.setview([44.05125071, -123.086754], 14).on("click", function(e) {
-				geocode.reverse(e.latlng);
-				L.marker([ ], { clickable : true }).setIcon(L.icon({iconUrl: "\Map-Marker.png", iconSize: [25, 19] }))
+	<! Load MapQuest stuff -->
+        <script src="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=SOoctRD4IfsY1ozL5vsosetXnKq8oaCA"></script>
+        <script src="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-geocoding.js?key=SOoctRD4IfsY1ozL5vsosetXnKq8oaCA"></script>
+
+	<! Start of the javascript part of our page -->
+        <script type="text/javascript">
+            window.onload = function() {
+
+                var popup = L.popup(),
+                    geocode,
+                    map;
+		//var marker = L.marker();
+
+		// Make a map centered on Eugene, then add a marker and popup on click event
+                map = L.map('map', {layers: MQ.mapLayer(), center: [ 44.05125071, -123.086754 ],
+                        zoom: 14 }).on('click', function(e) {
+			// Set location of popup
+                        popup.setLatLng(e.latlng)
+                            //.openOn(this);
+			// Make a marker that is clickable
+			L.marker([ ], { clickable : true })
+				// Set its location
 				.setLatLng(e.latlng)
-				.addTo(map).bindPopup(popup)
-				.on("click", function(e) { L.marker.togglePopup(); });
-			});
-		}// End of window.onload
-		</script>
-	</head>
-	<body style="border: 0; margin: 0">
-		<div id="map" style="width:500px; height:500px;"></div>
-	</body>
+				// Add it to the map
+				.addTo(map)
+				// And bind our popup to it
+				.bindPopup(popup)
+
+                        geocode.reverse(e.latlng);
+                    });
+
+                geocode = MQ.geocode().on('success', function(e) {
+                    popup.setContent(geocode.describeLocation(e.result.best));
+                });
+            }
+        </script>
+	<! End of the javascript part -->
+    </head>
+
+    <body style='border:0; margin: 0'>
+	<! Add the map to the body of our page with the size we want -->
+        <div id='map' style='width:1100px; height:830px;'></div>
+    </body>
 </html>
